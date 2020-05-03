@@ -8,8 +8,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Layouts',
-      component: Layouts
+      name: 'layouts',
+      component: Layouts,
     }
   ]
 })
