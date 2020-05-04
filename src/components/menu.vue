@@ -29,6 +29,11 @@ export default {
       this.curTodoId = this.items[0].id;
     })
   },
+  watch:{
+    'curTodoId'(id){
+      this.$router.push({ name: 'todo', params:{ id: id } });
+    },
+  },
   methods:{
       //更换显示的待办事项
       showTodo(id){

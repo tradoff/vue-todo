@@ -1,4 +1,4 @@
-import Mock from "mockjs";
+import Mock, { mock } from "mockjs";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import {
@@ -36,6 +36,53 @@ export default{
                 locked: false,
                 recode: []
             });
+
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve([200]);
+                }, delay);
+            });
+        }),
+
+        mockAdapter.onGet('/todo/listId').reply(config => {
+            let { id } = config.params;
+            let todo = Todos.find( todo => {
+                return id && todo.id === id;
+            });
+
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                      resolve([200, {todo: todo}]);
+                }, delay);
+            });
+        }),
+
+        mockAdapter.onPost('/todo/addRecord').reply(config => {
+            let { id, text } = JSON.parse(config.data);
+            let todo = Todos.find( todo => id && todo.id === id );
+            todo.recode.push({
+                text: text,
+                deleted: false,
+                checked: false
+            });
+
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve([200]);
+                }, delay);
+            });
+        }),
+
+        mockAdapter.onPost('/todo/update').reply(config => {
+            let data = JSON.parse(config.data);
+            let todo = Todos.find( todo => data.id && data.id === todo.id );
+
+            if( data.locked != undefined ){
+                todo.locked = data.locked;
+            }
+            if( data.deleted != undefined ){
+                todo.deleted = data.deleted;
+            }
 
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
