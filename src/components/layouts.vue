@@ -1,9 +1,11 @@
 <template>
-  <section class="container" > <!--最外层容器-->
+  <section class="container" :class="{'menu-open': menuOpened}"> <!--最外层容器-->
     <section class="menu"> <!--左边的容器-->
       <menus>
       </menus>
     </section>
+    <div class="content-overlay" @click="$store.dispatch('updateMenu')"></div> 
+    <!-- 这个是当页面收缩覆盖在内容上面的模糊层，点击后复原 他可以直接调用vuex actions.js里面的updateMenu方法-->
     <section class="content-container"><!--右边的容器-->
       <todo>
       </todo>
@@ -13,13 +15,19 @@
 <script>
   import menus from './menu';
   import todo from './todo';
+  import { mapState } from 'vuex';
 
   export  default {
       components:{
           menus: menus,
           todo: todo
+      },
+      computed: {
+        //相当于menuOpened(){return this.$store.state.menuOpened;}
+        ...mapState([ 'menuOpened' ])
       }
   };
+  
 </script>
 
 <style lang="less">

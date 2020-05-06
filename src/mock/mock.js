@@ -50,6 +50,10 @@ export default{
                 return id && todo.id === id;
             });
 
+            if(todo){
+                todo['count'] = todo.recode.filter(item => !item.checked).length;
+            }
+
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                       resolve([200, {todo: todo}]);
@@ -73,16 +77,29 @@ export default{
             });
         }),
 
+        mockAdapter.onPost('/todo/updateRecord').reply(config => {
+            let { id, item, index } = JSON.parse(config.data);
+            let todo = Todos.find( todo => id && todo.id === id );
+            let recode = todo.recode[index];
+            
+            recode.deleted = item.deleted;
+            recode.checked = item.checked;
+            recode.text = item.text;
+
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve([200]);
+                }, delay);
+            });
+        }),
+
         mockAdapter.onPost('/todo/update').reply(config => {
             let data = JSON.parse(config.data);
             let todo = Todos.find( todo => data.id && data.id === todo.id );
 
-            if( data.locked != undefined ){
-                todo.locked = data.locked;
-            }
-            if( data.deleted != undefined ){
-                todo.deleted = data.deleted;
-            }
+            todo.title = data.title;
+            todo.locked = data.locked;
+            todo.deleted = data.deleted;
 
             return new Promise((resolve, reject) => {
                 setTimeout(() => {

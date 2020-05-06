@@ -1,6 +1,6 @@
 <template>
   <div class="list-todos">  <!--菜单容器-->
-    <a class="list-todo activeListClass list" v-for="item in items" :key="item.id"
+    <a class="list-todo activeListClass list" v-for="item in todoList" :key="item.id"
         @click="showTodo(item.id)" :class="{'active': item.id == curTodoId}"> <!--单个菜单容器-->
         <span class="icon-lock" v-if="item.locked"></span>  <!--锁的图标-->
         <span class="count-list" v-if="item.count > 0">{{ item.count }}</span><!--数字-->
@@ -14,20 +14,32 @@
   </div>
 </template>
 <script>
-import {getTodoList, addTodo} from '../api/api';
+import { addTodo } from '../api/api';
 export default {
   data(){
     return {
-      items: [],
-      curTodoId: 0
+      curTodoId: 0,
+      count: 0
     };
   },
   created(){
     //加载初始列表
-    getTodoList().then(res => {
-      this.items = res.data.todos;
-      this.curTodoId = this.items[0].id;
+    this.$store.dispatch('getTodo').then(() => {
+      this.showTodo(this.todoList[0].id);
     })
+  },
+  computed:{
+    todoList(){
+      const list = this.$store.getters.getTodoList;
+      const count = list.length;
+
+      if(count < this.count){
+        this.showTodo(list[0].id);
+      }
+      this.count = count;
+
+      return list;
+    }
   },
   watch:{
     'curTodoId'(id){
@@ -42,11 +54,12 @@ export default {
       //新增待办事项
       newTodo(){
           addTodo().then(data => {
-            getTodoList().then(res => {
-              this.items = res.data.todos;
-              this.curTodoId = this.items[this.items.length - 1].id;
-            })
-          })
+            this.$store.dispatch('getTodo').then(() => {
+              this.$nextTick(() => {
+                this.showTodo(this.todoList[this.todoList.length - 1].id);
+              });
+            });
+          });
       }
   }
 };
