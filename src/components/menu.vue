@@ -27,14 +27,17 @@ export default {
   created(){
     //加载初始列表
     this.$store.dispatch('getTodo').then(() => {
-      this.showTodo(this.todoList[0].id);
+      //若待办事项列表为空，则跳过展示
+      if(this.todoList[0]){
+        this.showTodo(this.todoList[0].id);
+      }
     })
   },
   computed:{
     todoList(){
       const list = this.$store.getters.getTodoList;
       const count = list.length;
-      //若count为0，说明待办事项列表空了，则跳过展示，因为id为undefined
+      //若count为0，说明待办事项列表空了，则跳过展示
       //若待办事项减少了，说明存在待办事项被删除的情况，显示第一个待办事项详情
       if(count && count < this.count){
         this.showTodo(list[0].id);
