@@ -3,7 +3,7 @@
     <nav><!--容器上半部分-->
       <!-- 当用户点击标题进入修改状态，就显示当前内容可以修改 -->
       <div class="form list-edit-form" v-show="titleUpdating">
-          <input type="text" v-model="todo.title"    @keyup.enter="updateTitle" :disabled="todo.locked">
+          <input type="text" v-model="todo.title" @keyup.enter="updateTitle" :disabled="todo.locked">
           <div class="nav-group right">
             <a class="nav-item" @click="titleUpdating = false">
               <span class="icon-close">
