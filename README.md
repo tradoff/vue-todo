@@ -1,6 +1,6 @@
 # vue-todos
 
-> A Vue.js project
+> A Vue.js project demo, using Vuex, following a [lesson](http://yangyi1024.com/tags/vue/) based on the project [vue-todos](https://github.com/liangxiaojuan/vue-todos). 
 
 ## Build Setup
 
